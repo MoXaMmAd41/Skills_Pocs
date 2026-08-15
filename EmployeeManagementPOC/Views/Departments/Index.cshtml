@@ -1,0 +1,315 @@
+﻿@model IEnumerable<EmployeeManagementPOC.DTOs.Departments.DepartmentResponse>
+@using EmployeeManagementPOC.Constants
+@{
+    ViewData["Title"] = "Departments";
+}
+
+<div class="departments-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <div>
+            <div class="page-breadcrumb">
+                Management <span>/</span> Departments
+            </div>
+
+            <h1 class="page-title">
+                Departments
+            </h1>
+
+            <p class="page-subtitle">
+                Manage company departments and view their employee count.
+            </p>
+        </div>
+
+        @if (User.IsInRole(AppRoles.Admin) ||
+           User.IsInRole(AppRoles.HR))
+        {
+            <a asp-action="Create"
+               class="add-department-btn">
+                <span>+</span>
+                Add Department
+            </a>
+        }
+
+    </div>
+
+    <!-- Summary -->
+    <div class="department-summary">
+
+        <div class="summary-card">
+
+            <div class="summary-icon blue">
+                D
+            </div>
+
+            <div>
+                <span>Total Departments</span>
+                <strong>@Model.Count()</strong>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="summary-icon green">
+                E
+            </div>
+
+            <div>
+                <span>Total Employees</span>
+                <strong>
+                    @Model.Sum(x => x.EmployeesCount)
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="summary-card">
+
+            <div class="summary-icon purple">
+                A
+            </div>
+
+            <div>
+                <span>Average Employees</span>
+                <strong>
+                    @(Model.Any()
+                        ? Math.Round(
+                            Model.Average(x => x.EmployeesCount), 1)
+                        : 0)
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    @if (TempData["SuccessMessage"] is string success)
+    {
+        <div class="department-alert success">
+            <span>✓</span>
+            @success
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string error)
+    {
+        <div class="department-alert error">
+            <span>!</span>
+            @error
+        </div>
+    }
+
+    <!-- Department Table -->
+    <div class="department-card">
+
+        <div class="department-card-header">
+
+            <div>
+                <h2>All Departments</h2>
+
+                <span>
+                    @Model.Count() departments available
+                </span>
+            </div>
+
+            <div class="department-search">
+
+                <span>⌕</span>
+
+                <input type="text"
+                       id="departmentSearch"
+                       placeholder="Search departments..." />
+
+            </div>
+
+        </div>
+
+        <div class="department-table-wrapper">
+
+            <table class="department-table">
+
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Description</th>
+                        <th>Employees</th>
+                        <th>Status</th>
+                        <th class="actions-column">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="departmentTableBody">
+
+                    @foreach (var department in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <div class="department-name-cell">
+
+                                    <div class="department-avatar">
+                                        @department.Name.Substring(0, 1).ToUpper()
+                                    </div>
+
+                                    <div>
+                                        <strong>
+                                            @department.Name
+                                        </strong>
+
+                                        <small>
+                                            Department #@department.Id
+                                        </small>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td>
+
+                                <span class="department-description">
+                                    @department.Description
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <div class="employee-count">
+                                    <strong>
+                                        @department.EmployeesCount
+                                    </strong>
+
+                                    <span>
+                                        employee@(department.EmployeesCount == 1 ? "" : "s")
+                                    </span>
+                                </div>
+
+                            </td>
+
+                            <td>
+
+                                @if (department.EmployeesCount > 0)
+                                {
+                                    <span class="status-badge active">
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge empty">
+                                        No employees
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td>
+
+                                <div class="department-actions">
+
+                                    @if (User.IsInRole(AppRoles.Admin) ||
+                                         User.IsInRole(AppRoles.HR))
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@department.Id"
+                                           class="department-edit-btn">
+                                            Edit
+                                        </a>
+
+                                        <form asp-action="Delete"
+                                              asp-route-id="@department.Id"
+                                              method="post"
+                                              onsubmit="return confirm('Are you sure you want to delete this department?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="table-action delete">
+                                                Delete
+                                            </button>
+
+                                        </form>
+                                    }
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Empty State -->
+        <div id="departmentEmptyState"
+             class="department-empty"
+             style="display:none;">
+
+            <div class="empty-icon">
+                ?
+            </div>
+
+            <h3>No departments found</h3>
+
+            <p>
+                Try another search term.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function() {
+
+            $("#departmentSearch").on("input", function() {
+
+                const searchValue =
+                    $(this).val().toLowerCase().trim();
+
+                let visibleRows = 0;
+
+                $("#departmentTableBody tr").each(function() {
+
+                    const rowText =
+                        $(this).text().toLowerCase();
+
+                    const matches =
+                        rowText.includes(searchValue);
+
+                    $(this).toggle(matches);
+
+                    if (matches) {
+                        visibleRows++;
+                    }
+
+                });
+
+                if (visibleRows === 0) {
+                    $("#departmentEmptyState").show();
+                    $(".department-table").hide();
+                }
+                else {
+                    $("#departmentEmptyState").hide();
+                    $(".department-table").show();
+                }
+
+            });
+
+        });
+
+    </script>
+
+}

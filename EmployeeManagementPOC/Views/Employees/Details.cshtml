@@ -1,0 +1,77 @@
+﻿@model EmployeeManagementPOC.DTOs.Employees.EmployeeResponse
+
+@{
+    ViewData["Title"] = "Employee Details";
+}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between mb-4">
+
+        <h1>Employee Details</h1>
+
+        <div>
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-warning">
+                Edit
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Back
+            </a>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <strong>Name</strong>
+                    <div>@Model.FullName</div>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Email</strong>
+                    <div>@Model.Email</div>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Phone</strong>
+                    <div>@Model.Phone</div>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Department</strong>
+                    <div>@Model.DepartmentName</div>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Salary</strong>
+                    <div>@Model.Salary.ToString("N2")</div>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Hire Date</strong>
+                    <div>@Model.HireDate.ToString("yyyy-MM-dd")</div>
+                </div>
+
+                <div class="col-md-6">
+                    <strong>Status</strong>
+                    <div>
+                        @(Model.IsActive ? "Active" : "Inactive")
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

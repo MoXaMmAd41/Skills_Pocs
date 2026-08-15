@@ -1,0 +1,236 @@
+﻿@model EmployeeManagementPOC.ViewModels.Employees.EmployeeListViewModel
+@using EmployeeManagementPOC.Constants
+<div class="employee-table-card">
+
+    <div class="employee-table-header">
+
+        <div>
+            <h2>All Employees</h2>
+
+            <span>
+                Showing @Model.Employees.Count of @Model.TotalCount employees
+            </span>
+        </div>
+
+        <div class="employee-table-meta">
+            Page @Model.Filter.Page of @Model.TotalPages
+        </div>
+
+    </div>
+
+    <div class="employee-table-wrapper">
+
+        <table class="employee-table">
+
+            <thead>
+
+                <tr>
+                    <th>Employee</th>
+                    <th>Contact</th>
+                    <th>Department</th>
+                    <th>Salary</th>
+                    <th>Hire Date</th>
+                    <th>Status</th>
+                    <th class="employee-actions-header">
+                        Actions
+                    </th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @if (!Model.Employees.Any())
+                {
+                    <tr>
+                        <td colspan="7">
+                            <div class="employee-empty-state">
+
+                                <div class="employee-empty-icon">
+                                    E
+                                </div>
+
+                                <h3>No employees found</h3>
+
+                                <p>
+                                    Try changing your search or filter criteria.
+                                </p>
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var employee in Model.Employees)
+                    {
+                        <tr>
+
+                            <!-- Employee -->
+                            <td>
+
+                                <div class="employee-name-cell">
+                                    <div class="employee-avatar">
+                                        @(employee.FirstName.Substring(0, 1).ToUpper())
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            @employee.FullName
+                                        </strong>
+
+                                        <small>
+                                            #@employee.Id
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <!-- Contact -->
+                            <td>
+
+                                <div class="employee-contact">
+
+                                    <span>
+                                        @employee.Email
+                                    </span>
+
+                                    @if (!string.IsNullOrWhiteSpace(employee.Phone))
+                                    {
+                                        <small>
+                                            @employee.Phone
+                                        </small>
+                                    }
+
+                                </div>
+
+                            </td>
+
+                            <!-- Department -->
+                            <td>
+
+                                <span class="employee-department">
+                                    @employee.DepartmentName
+                                </span>
+
+                            </td>
+
+                            <!-- Salary -->
+                            <td>
+
+                                <span class="employee-salary">
+                                    @employee.Salary.ToString("N2")
+                                </span>
+
+                            </td>
+
+                            <!-- Hire Date -->
+                            <td>
+
+                                <span class="employee-date">
+                                    @employee.HireDate.ToString("MMM dd, yyyy")
+                                </span>
+
+                            </td>
+
+                            <!-- Status -->
+                            <td>
+
+                                @if (employee.IsActive)
+                                {
+                                    <span class="employee-status active">
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="employee-status inactive">
+                                        Inactive
+                                    </span>
+                                }
+
+                            </td>
+
+                            <!-- Actions -->
+                            <td>
+
+                                <div class="employee-actions">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@employee.Id"
+                                       class="employee-action view">
+                                        View
+                                    </a>
+
+                                    @if (User.IsInRole(AppRoles.Admin) ||
+                                         User.IsInRole(AppRoles.HR))
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@employee.Id"
+                                           class="employee-action edit">
+                                            Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@employee.Id"
+                                           class="employee-action delete">
+                                            Delete
+                                        </a>
+                                    }
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="employee-table-footer">
+
+        <div class="employee-total">
+            Total <strong>@Model.TotalCount</strong> employees
+        </div>
+
+        <div class="employee-pagination">
+
+            @if (Model.HasPreviousPage)
+            {
+                <button type="button"
+                        class="employee-page-button page-button"
+                        data-page="@(Model.Filter.Page - 1)">
+                    ← Previous
+                </button>
+            }
+
+            <span class="employee-page-info">
+                Page @Model.Filter.Page
+                of
+                @Model.TotalPages
+            </span>
+
+            @if (Model.HasNextPage)
+            {
+                <button type="button"
+                        class="employee-page-button page-button"
+                        data-page="@(Model.Filter.Page + 1)">
+                    Next →
+                </button>
+            }
+
+        </div>
+
+    </div>
+
+</div>

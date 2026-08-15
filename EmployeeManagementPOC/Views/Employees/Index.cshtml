@@ -1,0 +1,260 @@
+﻿@model EmployeeManagementPOC.ViewModels.Employees.EmployeeListViewModel
+@using EmployeeManagementPOC.Constants
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<div class="employees-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <div>
+            <div class="page-breadcrumb">
+                Management <span>/</span> Employees
+            </div>
+
+            <h1 class="page-title">
+                Employees
+            </h1>
+
+            <p class="page-subtitle">
+                Manage employees, departments and employee information.
+            </p>
+        </div>
+
+        @if (User.IsInRole(AppRoles.Admin) ||
+            User.IsInRole(AppRoles.HR))
+        {
+            <a asp-action="Create"
+               class="add-employee-btn">
+                <span>+</span>
+                Add Employee
+            </a>
+        }
+
+    </div>
+
+    <!-- Summary -->
+    <div class="employee-summary">
+
+        <div class="employee-summary-card">
+
+            <div class="employee-summary-icon blue">
+                E
+            </div>
+
+            <div>
+                <span>Total Employees</span>
+                <strong>@Model.TotalCount</strong>
+            </div>
+
+        </div>
+
+        <div class="employee-summary-card">
+
+            <div class="employee-summary-icon green">
+                ✓
+            </div>
+
+            <div>
+                <span>Active Employees</span>
+                <strong>
+                    @Model.Employees.Count(e => e.IsActive)
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="employee-summary-card">
+
+            <div class="employee-summary-icon orange">
+                $
+            </div>
+
+            <div>
+                <span>Average Salary</span>
+                <strong>
+                    @(Model.Employees.Any()
+                        ? Model.Employees
+                            .Average(e => e.Salary)
+                            .ToString("N2")
+                        : "0.00")
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="employee-summary-card">
+
+            <div class="employee-summary-icon purple">
+                D
+            </div>
+
+            <div>
+                <span>Departments</span>
+                <strong>
+                    @Model.Departments.Count
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    @if (TempData["SuccessMessage"] is string success)
+    {
+        <div class="employee-alert success">
+            <span>✓</span>
+            @success
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string error)
+    {
+        <div class="employee-alert error">
+            <span>!</span>
+            @error
+        </div>
+    }
+
+    <!-- Filters -->
+    <div class="employee-filter-card">
+
+        <div class="filter-header">
+
+            <div>
+                <h2>Employee Directory</h2>
+
+                <span>
+                    Search and filter employees
+                </span>
+            </div>
+
+        </div>
+
+        <form id="employeeFilterForm"
+              asp-action="Index"
+              method="get">
+
+            <div class="employee-filter-grid">
+
+                <div class="employee-filter-field search-field">
+
+                    <label asp-for="Filter.Search">
+                        Search
+                    </label>
+
+                    <div class="employee-search-wrapper">
+
+                        <span>⌕</span>
+
+                        <input asp-for="Filter.Search"
+                               id="searchInput"
+                               placeholder="Name or email..."
+                               autocomplete="off" />
+
+                    </div>
+
+                </div>
+
+                <div class="employee-filter-field">
+
+                    <label asp-for="Filter.DepartmentId">
+                        Department
+                    </label>
+
+                    <select asp-for="Filter.DepartmentId"
+                            id="departmentFilter">
+
+                        <option value="">
+                            All Departments
+                        </option>
+
+                        @foreach (var department in Model.Departments)
+                        {
+                            <option value="@department.Id">
+                                @department.Name
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="employee-filter-field">
+
+                    <label asp-for="Filter.IsActive">
+                        Status
+                    </label>
+
+                    <select asp-for="Filter.IsActive"
+                            id="statusFilter">
+
+                        <option value="">All Statuses</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+
+                    </select>
+
+                </div>
+
+                <div class="employee-filter-field">
+
+                    <label asp-for="Filter.SortBy">
+                        Sort By
+                    </label>
+
+                    <select asp-for="Filter.SortBy"
+                            id="sortFilter">
+
+                        <option value="Name">
+                            Name
+                        </option>
+
+                        <option value="Salary">
+                            Salary
+                        </option>
+
+                        <option value="HireDate">
+                            Hire Date
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="employee-filter-actions">
+
+                    <button type="submit"
+                            class="employee-search-btn">
+                        Search
+                    </button>
+
+                    <a asp-action="Index"
+                       class="employee-reset-btn">
+                        Reset
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- Employee Table -->
+    <div id="employeeTableContainer">
+
+        @await Html.PartialAsync(
+            "~/Views/Shared/_EmployeeTable.cshtml",
+            Model)
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/employees.js"></script>
+}

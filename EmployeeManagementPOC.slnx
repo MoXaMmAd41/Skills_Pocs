@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EmployeeManagementPOC/EmployeeManagementPOC.csproj" />
+  <Project Path="NetworkDiagnosticsPOC/NetworkDiagnosticsPOC.csproj" Id="de693f80-192c-479a-92ef-157675df4227" />
+</Solution>

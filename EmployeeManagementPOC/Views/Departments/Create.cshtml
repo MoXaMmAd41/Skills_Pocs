@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Create Department";
+}
+
+<div class="container py-4">
+
+    <h1>Create Department</h1>
+
+    <form asp-action="Create" method="post">
+
+        <div asp-validation-summary="All"
+             class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Name
+            </label>
+
+            <input name="name"
+                   class="form-control" />
+
+        </div>
+
+        <div class="mb-3">
+
+            <label class="form-label">
+                Description
+            </label>
+
+            <textarea name="description"
+                      class="form-control">
+            </textarea>
+
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Create
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>

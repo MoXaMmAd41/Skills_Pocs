@@ -1,0 +1,296 @@
+﻿@model EmployeeManagementPOC.ViewModels.Dashboard.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-page">
+
+    <!-- Header -->
+    <div class="dashboard-header">
+
+        <div>
+            <div class="dashboard-breadcrumb">
+                Overview <span>/</span> Dashboard
+            </div>
+
+            <h1 class="dashboard-title">
+                Dashboard
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Overview of your employee management operations.
+            </p>
+        </div>
+
+        <div class="dashboard-date">
+            <span class="dashboard-date-label">
+                Today
+            </span>
+
+            <strong>
+                @DateTime.Now.ToString("MMM dd, yyyy")
+            </strong>
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+    <div class="dashboard-stats">
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+                <span class="dashboard-stat-label">
+                    Total Employees
+                </span>
+
+                <span class="dashboard-stat-icon blue">
+                    E
+                </span>
+            </div>
+
+            <strong class="dashboard-stat-value">
+                @Model.TotalEmployees
+            </strong>
+
+            <span class="dashboard-stat-description">
+                Employees registered in the system
+            </span>
+
+        </div>
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+                <span class="dashboard-stat-label">
+                    Active Employees
+                </span>
+
+                <span class="dashboard-stat-icon green">
+                    ✓
+                </span>
+            </div>
+
+            <strong class="dashboard-stat-value">
+                @Model.ActiveEmployees
+            </strong>
+
+            <span class="dashboard-stat-description">
+                Currently active employees
+            </span>
+
+        </div>
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+                <span class="dashboard-stat-label">
+                    Departments
+                </span>
+
+                <span class="dashboard-stat-icon purple">
+                    D
+                </span>
+            </div>
+
+            <strong class="dashboard-stat-value">
+                @Model.TotalDepartments
+            </strong>
+
+            <span class="dashboard-stat-description">
+                Organization departments
+            </span>
+
+        </div>
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-top">
+                <span class="dashboard-stat-label">
+                    Average Salary
+                </span>
+
+                <span class="dashboard-stat-icon orange">
+                    $
+                </span>
+            </div>
+
+            <strong class="dashboard-stat-value">
+                @Model.AverageSalary.ToString("N2")
+            </strong>
+
+            <span class="dashboard-stat-description">
+                Average employee salary
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-content-grid">
+
+        <!-- Employees by Department -->
+        <div class="dashboard-main-card">
+
+            <div class="dashboard-card-header">
+
+                <div>
+                    <h2>
+                        Employees by Department
+                    </h2>
+
+                    <span>
+                        Distribution across departments
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="dashboard-department-list">
+
+                @if (!Model.EmployeesByDepartment.Any())
+                {
+                    <div class="dashboard-empty">
+                        No department data available.
+                    </div>
+                }
+                else
+                {
+                    foreach (var department in Model.EmployeesByDepartment)
+                    {
+                        <div class="dashboard-department-row">
+
+                            <div class="dashboard-department-info">
+
+                                <div class="dashboard-department-avatar">
+                                    @(department.DepartmentName.Substring(0, 1).ToUpper())
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        @department.DepartmentName
+                                    </strong>
+
+                                    <span>
+                                        @department.EmployeeCount
+                                        employee@(department.EmployeeCount == 1 ? "" : "s")
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="dashboard-department-progress">
+
+                                @{
+                                    int maxEmployees =
+                                        Model.EmployeesByDepartment
+                                            .Max(x => x.EmployeeCount);
+
+                                    int percentage =
+                                        maxEmployees == 0
+                                            ? 0
+                                            : (int)Math.Round(
+                                                department.EmployeeCount /
+                                                (double)maxEmployees * 100);
+                                }
+
+                                <div class="dashboard-progress-track">
+
+                                    <div class="dashboard-progress-bar"
+                                         style="width:@percentage%;">
+                                    </div>
+
+                                </div>
+
+                                <span>
+                                    @percentage%
+                                </span>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+
+            </div>
+
+        </div>
+
+        <!-- Quick Summary -->
+        <div class="dashboard-side-card">
+
+            <div class="dashboard-card-header">
+
+                <div>
+                    <h2>
+                        Workforce Summary
+                    </h2>
+
+                    <span>
+                        Current workforce status
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="dashboard-summary-body">
+
+                <div class="summary-item">
+
+                    <div class="summary-item-label">
+                        Active
+                    </div>
+
+                    <div class="summary-item-value green">
+                        @Model.ActiveEmployees
+                    </div>
+
+                </div>
+
+                <div class="summary-item">
+
+                    <div class="summary-item-label">
+                        Inactive
+                    </div>
+
+                    <div class="summary-item-value gray">
+                        @Model.InactiveEmployees
+                    </div>
+
+                </div>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-item">
+
+                    <div class="summary-item-label">
+                        Total Departments
+                    </div>
+
+                    <div class="summary-item-value blue">
+                        @Model.TotalDepartments
+                    </div>
+
+                </div>
+
+                <div class="summary-item">
+
+                    <div class="summary-item-label">
+                        Avg. Salary
+                    </div>
+
+                    <div class="summary-item-value">
+                        @Model.AverageSalary.ToString("N2")
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
