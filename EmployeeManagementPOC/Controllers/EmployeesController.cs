@@ -210,4 +210,18 @@ public class EmployeesController : Controller
             .GetRequiredService<IDepartmentService>()
             .GetAllAsync();
     }
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> MockTest()
+    {
+        using HttpClient client = new();
+
+        HttpResponseMessage response =
+            await client.GetAsync("http://localhost:3001/employees");
+
+        string data =
+            await response.Content.ReadAsStringAsync();
+
+        return Content(data, "application/json");
+    }
 }

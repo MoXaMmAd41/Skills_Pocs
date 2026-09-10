@@ -1,0 +1,17 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: employee-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Str0ngPass!2026"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: employee-management-poc
+    ports:
+      - "5001:8080"
+    depends_on:
+      - sqlserver
