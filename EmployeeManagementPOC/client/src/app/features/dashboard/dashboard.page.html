@@ -1,0 +1,117 @@
+<div class="dashboard-page">
+  <div class="dashboard-header">
+    <div>
+      <div class="dashboard-breadcrumb">Overview <span>/</span> Dashboard</div>
+      <h1 class="dashboard-title">Dashboard</h1>
+      <p class="dashboard-subtitle">Overview of your employee management operations.</p>
+    </div>
+
+    <div class="dashboard-date">
+      <span class="dashboard-date-label">Today</span>
+      <strong>{{ today | date: 'MMM dd, yyyy' }}</strong>
+    </div>
+  </div>
+
+  @if (dashboard(); as data) {
+    <div class="dashboard-stats">
+      <div class="dashboard-stat-card">
+        <div class="dashboard-stat-top">
+          <span class="dashboard-stat-label">Total Employees</span>
+          <span class="dashboard-stat-icon blue">E</span>
+        </div>
+        <strong class="dashboard-stat-value">{{ data.totalEmployees | number }}</strong>
+        <span class="dashboard-stat-description">Employees registered in the system</span>
+      </div>
+
+      <div class="dashboard-stat-card">
+        <div class="dashboard-stat-top">
+          <span class="dashboard-stat-label">Active Employees</span>
+          <span class="dashboard-stat-icon green">✓</span>
+        </div>
+        <strong class="dashboard-stat-value">{{ data.activeEmployees | number }}</strong>
+        <span class="dashboard-stat-description">Currently active employees</span>
+      </div>
+
+      <div class="dashboard-stat-card">
+        <div class="dashboard-stat-top">
+          <span class="dashboard-stat-label">Departments</span>
+          <span class="dashboard-stat-icon purple">D</span>
+        </div>
+        <strong class="dashboard-stat-value">{{ data.totalDepartments | number }}</strong>
+        <span class="dashboard-stat-description">Organization departments</span>
+      </div>
+
+      <div class="dashboard-stat-card">
+        <div class="dashboard-stat-top">
+          <span class="dashboard-stat-label">Average Salary</span>
+          <span class="dashboard-stat-icon orange">$</span>
+        </div>
+        <strong class="dashboard-stat-value">{{ data.averageSalary | currency }}</strong>
+        <span class="dashboard-stat-description">Average employee salary</span>
+      </div>
+    </div>
+
+    <div class="dashboard-content-grid">
+      <div class="dashboard-main-card">
+        <div class="dashboard-card-header">
+          <div>
+            <h2>Employees by Department</h2>
+            <span>Distribution across departments</span>
+          </div>
+        </div>
+
+        <div class="dashboard-department-list">
+          @for (department of data.employeesByDepartment; track department.departmentId) {
+            <div class="dashboard-department-row">
+              <div class="dashboard-department-info">
+                <div class="dashboard-department-avatar">{{ department.departmentName | initials }}</div>
+                <div>
+                  <strong>{{ department.departmentName }}</strong>
+                  <span>{{ department.employeeCount | pluralize: 'employee' }}</span>
+                </div>
+              </div>
+
+              <div class="dashboard-department-progress">
+                <div class="dashboard-progress-track">
+                  <div class="dashboard-progress-bar" [style.width.%]="department.relativeSize"></div>
+                </div>
+                <span>{{ department.relativeSize }}%</span>
+              </div>
+            </div>
+          } @empty {
+            <div class="dashboard-empty">No department data available.</div>
+          }
+        </div>
+      </div>
+
+      <div class="dashboard-side-card">
+        <div class="dashboard-card-header">
+          <div>
+            <h2>Workforce Summary</h2>
+            <span>Current workforce status</span>
+          </div>
+        </div>
+
+        <div class="dashboard-summary-body">
+          <div class="summary-item">
+            <div class="summary-item-label">Active</div>
+            <div class="summary-item-value green">{{ data.activeEmployees }}</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-label">Inactive</div>
+            <div class="summary-item-value gray">{{ data.inactiveEmployees }}</div>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-item">
+            <div class="summary-item-label">Total Departments</div>
+            <div class="summary-item-value blue">{{ data.totalDepartments }}</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-label">Avg. Salary</div>
+            <div class="summary-item-value">{{ data.averageSalary | currency }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

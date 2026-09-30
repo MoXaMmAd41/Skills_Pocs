@@ -1,0 +1,31 @@
+<div class="container py-4">
+  <div class="page-breadcrumb">Management <span>/</span> Departments</div>
+  <h1 class="page-title mb-4">{{ isEdit() ? 'Edit Department' : 'Create Department' }}</h1>
+
+  <form class="card shadow-sm" [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <div class="card-body">
+      @if (formError(); as message) {
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+      }
+
+      <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input id="name" class="form-control" formControlName="name" />
+        <app-field-error [control]="form.controls.name" />
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description <span class="text-muted">(optional)</span></label>
+        <textarea id="description" rows="3" class="form-control" formControlName="description"></textarea>
+        <app-field-error [control]="form.controls.description" />
+      </div>
+    </div>
+
+    <div class="card-footer d-flex gap-2">
+      <button type="submit" class="btn btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : isEdit() ? 'Save changes' : 'Create' }}
+      </button>
+      <a routerLink="/departments" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>

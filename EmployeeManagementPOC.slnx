@@ -1,4 +1,17 @@
 <Solution>
-  <Project Path="EmployeeManagementPOC/EmployeeManagementPOC.csproj" />
+  <Folder Name="/EmployeeManagement/">
+    <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Domain/EmployeeManagement.Domain.csproj" />
+    <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Application/EmployeeManagement.Application.csproj" />
+    <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Infrastructure/EmployeeManagement.Infrastructure.csproj" />
+    <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Api/EmployeeManagement.Api.csproj" />
+  </Folder>
+  <Project Path="AIDeveloperAssistantPOC/AIDeveloperAssistantPOC.csproj" />
+  <Project Path="AIDeveloperAssistantPOC.Tests/AIDeveloperAssistantPOC.Tests.csproj" />
+  <Folder Name="/DataStructuresAlgorithms/">
+    <Project Path="DataStructuresAlgorithmsPOC/DataStructuresAlgorithmsPOC.csproj" />
+    <Project Path="DataStructuresAlgorithmsPOC.Tests/DataStructuresAlgorithmsPOC.Tests.csproj" />
+    <Project Path="DataStructuresAlgorithmsPOC.Benchmarks/DataStructuresAlgorithmsPOC.Benchmarks.csproj" />
+    <Project Path="DataStructuresAlgorithmsPOC.Playground/DataStructuresAlgorithmsPOC.Playground.csproj" />
+  </Folder>
   <Project Path="NetworkDiagnosticsPOC/NetworkDiagnosticsPOC.csproj" Id="de693f80-192c-479a-92ef-157675df4227" />
 </Solution>

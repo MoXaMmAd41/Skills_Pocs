@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  build:
+  dotnet:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,8 +15,30 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore
-        run: dotnet restore EmployeeManagementPOC/EmployeeManagementPOC.csproj
+      - name: Build
+        run: dotnet build EmployeeManagementPOC.slnx -c Release
+
+      - name: Test
+        run: dotnet test EmployeeManagementPOC.slnx -c Release --no-build
+
+  client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: EmployeeManagementPOC/client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: EmployeeManagementPOC/client/package-lock.json
+
+      - name: Install
+        run: npm ci
 
       - name: Build
-        run: dotnet build EmployeeManagementPOC/EmployeeManagementPOC.csproj --no-restore
+        run: npx ng build --configuration production

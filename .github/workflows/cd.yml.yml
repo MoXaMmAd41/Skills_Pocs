@@ -34,6 +34,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: ./EmployeeManagementPOC
+          context: .
+          file: ./EmployeeManagementPOC/Dockerfile
           push: true
           tags: ghcr.io/${{ steps.image.outputs.owner }}/employee-management:latest
