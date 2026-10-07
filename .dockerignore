@@ -1,0 +1,16 @@
+# Build context is the repo root; only EmployeeManagementPOC and DataStructuresAlgorithmsPOC are needed.
+.git/
+.github/
+AIDeveloperAssistantPOC*/
+NetworkDiagnosticsPOC/
+DataStructuresAlgorithmsPOC.Tests/
+DataStructuresAlgorithmsPOC.Benchmarks/
+DataStructuresAlgorithmsPOC.Playground/
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/.angular/
+**/*.user
+**/.vs/
+**/.vscode/

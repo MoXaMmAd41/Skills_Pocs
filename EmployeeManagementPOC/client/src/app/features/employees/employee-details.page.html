@@ -1,0 +1,43 @@
+<div class="container py-4">
+  @if (employee(); as employee) {
+    <div class="d-flex justify-content-between align-items-start mb-4">
+      <div>
+        <div class="page-breadcrumb">Management <span>/</span> Employees <span>/</span> #{{ employee.id }}</div>
+        <h1 class="page-title">{{ employee.fullName }}</h1>
+      </div>
+
+      <div class="d-flex gap-2">
+        @if (canManage) {
+          <a [routerLink]="['edit']" class="btn btn-warning">Edit</a>
+          <button type="button" class="btn btn-outline-danger" (click)="remove(employee)">Delete</button>
+        }
+        <a routerLink="/employees" class="btn btn-secondary">Back</a>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <dl class="row g-4 mb-0">
+          <div class="col-md-6"><dt>Email</dt><dd>{{ employee.email }}</dd></div>
+          <div class="col-md-6"><dt>Phone</dt><dd>{{ employee.phone || '—' }}</dd></div>
+          <div class="col-md-6"><dt>Department</dt><dd>{{ employee.departmentName }}</dd></div>
+          <div class="col-md-6"><dt>Salary</dt><dd>{{ employee.salary | currency }}</dd></div>
+          <div class="col-md-6"><dt>Hire Date</dt><dd>{{ employee.hireDate | date: 'yyyy-MM-dd' }}</dd></div>
+          <div class="col-md-6">
+            <dt>Status</dt>
+            <dd>
+              <span class="employee-status" [class.active]="employee.isActive" [class.inactive]="!employee.isActive">
+                {{ employee.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  } @else if (employee() === null) {
+    <div class="text-center py-5">
+      <h1 class="h3">Employee not found</h1>
+      <a routerLink="/employees" class="btn btn-primary mt-3">Back to Employees</a>
+    </div>
+  }
+</div>

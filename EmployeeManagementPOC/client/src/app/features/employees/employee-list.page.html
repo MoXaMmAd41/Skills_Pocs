@@ -1,0 +1,198 @@
+<div class="employees-page">
+  <div class="page-header">
+    <div>
+      <div class="page-breadcrumb">Management <span>/</span> Employees</div>
+      <h1 class="page-title">Employees</h1>
+      <p class="page-subtitle">Manage employees, departments and employee information.</p>
+    </div>
+
+    @if (canManage) {
+      <a routerLink="new" class="add-employee-btn"><span>+</span> Add Employee</a>
+    }
+  </div>
+
+  <div class="employee-summary">
+    <div class="employee-summary-card">
+      <div class="employee-summary-icon blue">E</div>
+      <div>
+        <span>Matching Employees</span>
+        <strong>{{ result()?.totalCount ?? 0 }}</strong>
+      </div>
+    </div>
+    <div class="employee-summary-card">
+      <div class="employee-summary-icon purple">D</div>
+      <div>
+        <span>Departments</span>
+        <strong>{{ departments().length }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="employee-filter-card">
+    <div class="filter-header">
+      <div>
+        <h2>Employee Directory</h2>
+        <span>Search and filter employees</span>
+      </div>
+    </div>
+
+    <form [formGroup]="form">
+      <div class="employee-filter-grid">
+        <div class="employee-filter-field search-field">
+          <label for="search">Search</label>
+          <div class="employee-search-wrapper">
+            <span>⌕</span>
+            <input
+              id="search"
+              formControlName="search"
+              placeholder="Name or email..."
+              autocomplete="off"
+              list="employee-suggestions"
+            />
+            <datalist id="employee-suggestions">
+              @for (suggestion of suggestions(); track suggestion.id) {
+                <option [value]="suggestion.fullName">{{ suggestion.email }} · {{ suggestion.departmentName }}</option>
+              }
+            </datalist>
+          </div>
+        </div>
+
+        <div class="employee-filter-field">
+          <label for="department">Department</label>
+          <select id="department" formControlName="departmentId">
+            <option [ngValue]="null">All Departments</option>
+            @for (department of departments(); track department.id) {
+              <option [ngValue]="department.id">{{ department.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="employee-filter-field">
+          <label for="status">Status</label>
+          <select id="status" formControlName="isActive">
+            <option [ngValue]="null">All Statuses</option>
+            <option [ngValue]="true">Active</option>
+            <option [ngValue]="false">Inactive</option>
+          </select>
+        </div>
+
+        <div class="employee-filter-field">
+          <label for="sortBy">Sort By</label>
+          <select id="sortBy" formControlName="sortBy">
+            @for (option of sortOptions; track option.value) {
+              <option [ngValue]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="employee-filter-field">
+          <label for="sortDirection">Order</label>
+          <select id="sortDirection" formControlName="sortDescending">
+            <option [ngValue]="false">Ascending</option>
+            <option [ngValue]="true">Descending</option>
+          </select>
+        </div>
+
+        <div class="employee-filter-actions">
+          <button type="button" class="employee-reset-btn" (click)="reset()">Reset</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="employee-table-card" [class.loading]="loading()">
+    @if (result(); as page) {
+      <div class="employee-table-header">
+        <div>
+          <h2>All Employees</h2>
+          <span>Showing {{ page.items.length }} of {{ page.totalCount }} employees</span>
+        </div>
+        <div class="employee-table-meta">Page {{ page.page }} of {{ page.totalPages }}</div>
+      </div>
+
+      <div class="employee-table-wrapper">
+        <table class="employee-table">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Contact</th>
+              <th>Department</th>
+              <th>Salary</th>
+              <th>Hire Date</th>
+              <th>Status</th>
+              <th class="employee-actions-header">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (employee of page.items; track employee.id) {
+              <tr>
+                <td>
+                  <div class="employee-name-cell">
+                    <div class="employee-avatar">{{ employee.fullName | initials }}</div>
+                    <div>
+                      <strong>{{ employee.fullName }}</strong>
+                      <small>#{{ employee.id }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="employee-contact">
+                    <span>{{ employee.email }}</span>
+                    @if (employee.phone) {
+                      <small>{{ employee.phone }}</small>
+                    }
+                  </div>
+                </td>
+                <td><span class="employee-department">{{ employee.departmentName }}</span></td>
+                <td><span class="employee-salary">{{ employee.salary | currency }}</span></td>
+                <td><span class="employee-date">{{ employee.hireDate | date: 'MMM dd, yyyy' }}</span></td>
+                <td>
+                  <span class="employee-status" [class.active]="employee.isActive" [class.inactive]="!employee.isActive">
+                    {{ employee.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="employee-actions">
+                    <a [routerLink]="[employee.id]" class="employee-action view">View</a>
+                    @if (canManage) {
+                      <a [routerLink]="[employee.id, 'edit']" class="employee-action edit">Edit</a>
+                      <button type="button" class="employee-action delete" (click)="remove(employee)">Delete</button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7">
+                  <div class="employee-empty-state">
+                    <div class="employee-empty-icon">E</div>
+                    <h3>No employees found</h3>
+                    <p>Try changing your search or filter criteria.</p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="employee-table-footer">
+        <div class="employee-total">Total <strong>{{ page.totalCount }}</strong> employees</div>
+
+        <div class="employee-pagination">
+          @if (page.hasPreviousPage) {
+            <button type="button" class="employee-page-button page-button" (click)="goToPage(page.page - 1)">
+              ← Previous
+            </button>
+          }
+          <span class="employee-page-info">Page {{ page.page }} of {{ page.totalPages }}</span>
+          @if (page.hasNextPage) {
+            <button type="button" class="employee-page-button page-button" (click)="goToPage(page.page + 1)">
+              Next →
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

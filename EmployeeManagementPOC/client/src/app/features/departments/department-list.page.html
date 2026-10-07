@@ -1,0 +1,118 @@
+<div class="departments-page">
+  <div class="page-header">
+    <div>
+      <div class="page-breadcrumb">Management <span>/</span> Departments</div>
+      <h1 class="page-title">Departments</h1>
+      <p class="page-subtitle">Manage company departments and view their employee count.</p>
+    </div>
+
+    @if (canManage) {
+      <a routerLink="new" class="add-department-btn"><span>+</span> Add Department</a>
+    }
+  </div>
+
+  <div class="department-summary">
+    <div class="summary-card">
+      <div class="summary-icon blue">D</div>
+      <div>
+        <span>Total Departments</span>
+        <strong>{{ departments().length }}</strong>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon green">E</div>
+      <div>
+        <span>Total Employees</span>
+        <strong>{{ totalEmployees() }}</strong>
+      </div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-icon purple">A</div>
+      <div>
+        <span>Average Employees</span>
+        <strong>{{ averageEmployees() | number: '1.0-1' }}</strong>
+      </div>
+    </div>
+  </div>
+
+  @let visible = departments() | filterBy: search() : searchKeys;
+
+  <div class="department-card">
+    <div class="department-card-header">
+      <div>
+        <h2>All Departments</h2>
+        <span>{{ visible.length | pluralize: 'department' }} shown</span>
+      </div>
+
+      <div class="department-search">
+        <span>⌕</span>
+        <input
+          type="text"
+          placeholder="Search departments..."
+          aria-label="Search departments"
+          [value]="search()"
+          (input)="search.set($any($event.target).value)"
+        />
+      </div>
+    </div>
+
+    @if (visible.length) {
+      <div class="department-table-wrapper">
+        <table class="department-table">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Description</th>
+              <th>Employees</th>
+              <th>Status</th>
+              <th class="actions-column">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (department of visible; track department.id) {
+              <tr>
+                <td>
+                  <div class="department-name-cell">
+                    <div class="department-avatar">{{ department.name | initials }}</div>
+                    <div>
+                      <strong>{{ department.name }}</strong>
+                      <small>Department #{{ department.id }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="department-description">{{ department.description }}</span></td>
+                <td>
+                  <div class="employee-count">
+                    <strong>{{ department.employeesCount }}</strong>
+                    <span>{{ department.employeesCount === 1 ? 'employee' : 'employees' }}</span>
+                  </div>
+                </td>
+                <td>
+                  @if (department.employeesCount > 0) {
+                    <span class="status-badge active">Active</span>
+                  } @else {
+                    <span class="status-badge empty">No employees</span>
+                  }
+                </td>
+                <td>
+                  <div class="department-actions">
+                    @if (canManage) {
+                      <a [routerLink]="[department.id, 'edit']" class="department-edit-btn">Edit</a>
+                      <button type="button" class="table-action delete" (click)="remove(department)">Delete</button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="department-empty">
+        <div class="empty-icon">?</div>
+        <h3>No departments found</h3>
+        <p>Try another search term.</p>
+      </div>
+    }
+  </div>
+</div>

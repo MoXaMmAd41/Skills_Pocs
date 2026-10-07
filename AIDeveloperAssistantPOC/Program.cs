@@ -1,56 +1,50 @@
-﻿using AIDeveloperAssistantPOC.Services;
+using AIDeveloperAssistantPOC.Configuration;
+using AIDeveloperAssistantPOC.Interfaces;
+using AIDeveloperAssistantPOC.Services;
+using AIDeveloperAssistantPOC.Skills;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
-string? apiKey =
-    Environment.GetEnvironmentVariable(
-        "OPENAI_API_KEY");
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-if (string.IsNullOrWhiteSpace(apiKey))
-{
-    Console.WriteLine(
-        "OPENAI_API_KEY is not configured.");
+// Console apps run as "Production" by default, where the host skips user secrets; load them explicitly.
+builder.Configuration.AddUserSecrets<Program>(optional: true);
 
-    return;
-}
+builder.Services
+    .AddOptions<AIOptions>()
+    .Bind(builder.Configuration.GetSection(AIOptions.SectionName))
+    // Keep the conventional OpenAI environment variable working alongside configuration/user secrets.
+    .PostConfigure(options =>
+    {
+        if (string.IsNullOrWhiteSpace(options.ApiKey))
+        {
+            options.ApiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? string.Empty;
+        }
+    })
+    .ValidateDataAnnotations();
 
-AIService aiService =
-    new(apiKey);
+builder.Services.AddSingleton<IAIService, AIService>();
+builder.Services.AddSingleton<ConsoleInputReader>();
+builder.Services.AddSingleton<ConsoleMenuService>();
 
-Console.WriteLine();
-Console.WriteLine("========================================");
-Console.WriteLine("       AI DEVELOPER ASSISTANT");
-Console.WriteLine("========================================");
-Console.WriteLine();
+// Menu order follows registration order.
+builder.Services.AddSingleton<IAssistantSkill, ExceptionAnalyzer>();
+builder.Services.AddSingleton<IAssistantSkill, DocumentationGenerator>();
+builder.Services.AddSingleton<IAssistantSkill, SecurityTestGenerator>();
+builder.Services.AddSingleton<IAssistantSkill, GeneralAssistant>();
 
-Console.Write("Enter your prompt: ");
-
-string? prompt =
-    Console.ReadLine();
-
-if (string.IsNullOrWhiteSpace(prompt))
-{
-    Console.WriteLine(
-        "Prompt is required.");
-
-    return;
-}
+using IHost host = builder.Build();
 
 try
 {
-    Console.WriteLine();
-    Console.WriteLine("AI is thinking...");
-    Console.WriteLine();
-
-    string response =
-        await aiService.AskAsync(prompt);
-
-    Console.WriteLine("AI RESPONSE");
-    Console.WriteLine("----------------------------------------");
-    Console.WriteLine(response);
-    Console.WriteLine("----------------------------------------");
+    await host.Services.GetRequiredService<ConsoleMenuService>().RunAsync();
 }
-catch (Exception ex)
+catch (OptionsValidationException ex)
 {
-    Console.WriteLine();
-    Console.WriteLine("AI request failed.");
-    Console.WriteLine(ex.Message);
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine(string.Join(Environment.NewLine, ex.Failures));
+    Console.ResetColor();
+    Environment.ExitCode = 1;
 }
