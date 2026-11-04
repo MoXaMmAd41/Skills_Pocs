@@ -18,7 +18,7 @@ internal sealed class EmployeeRequestValidator : AbstractValidator<EmployeeReque
             .Matches(@"^\+?[0-9\s\-()]+$").WithMessage("Phone number is not valid.")
             .When(x => !string.IsNullOrWhiteSpace(x.Phone));
 
-        RuleFor(x => x.Salary).InclusiveBetween(0, Employee.MaxSalary);
+        RuleFor(x => x.Salary).InclusiveBetween(0, Salary.Max);
 
         RuleFor(x => x.HireDate).NotEmpty();
 

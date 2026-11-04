@@ -59,7 +59,7 @@ internal sealed class EmployeeService(
             request.LastName,
             email,
             request.Phone,
-            request.Salary,
+            Salary.Create(request.Salary),
             request.HireDate,
             request.DepartmentId,
             request.IsActive);
@@ -85,14 +85,11 @@ internal sealed class EmployeeService(
             await EnsureDepartmentExistsAsync(request.DepartmentId, cancellationToken);
         }
 
-        employee.UpdateDetails(
-            request.FirstName,
-            request.LastName,
-            email,
-            request.Phone,
-            request.Salary,
-            request.HireDate,
-            request.DepartmentId);
+        // One form can carry several business changes; each is its own intention on the aggregate
+        // and raises its own event only when something actually changed.
+        employee.UpdateProfile(request.FirstName, request.LastName, email, request.Phone, request.HireDate);
+        employee.ChangeSalary(Salary.Create(request.Salary));
+        employee.TransferTo(request.DepartmentId);
 
         if (request.IsActive)
         {

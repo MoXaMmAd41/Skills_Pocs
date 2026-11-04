@@ -5,13 +5,15 @@
     <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Infrastructure/EmployeeManagement.Infrastructure.csproj" />
     <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Api/EmployeeManagement.Api.csproj" />
   </Folder>
-  <Project Path="AIDeveloperAssistantPOC/AIDeveloperAssistantPOC.csproj" />
-  <Project Path="AIDeveloperAssistantPOC.Tests/AIDeveloperAssistantPOC.Tests.csproj" />
   <Folder Name="/DataStructuresAlgorithms/">
     <Project Path="DataStructuresAlgorithmsPOC/DataStructuresAlgorithmsPOC.csproj" />
-    <Project Path="DataStructuresAlgorithmsPOC.Tests/DataStructuresAlgorithmsPOC.Tests.csproj" />
-    <Project Path="DataStructuresAlgorithmsPOC.Benchmarks/DataStructuresAlgorithmsPOC.Benchmarks.csproj" />
-    <Project Path="DataStructuresAlgorithmsPOC.Playground/DataStructuresAlgorithmsPOC.Playground.csproj" />
+  </Folder>
+  <Folder Name="/DesignPatterns/">
+    <Project Path="DesignPatternsPOC/FactoryMethodPOC/FactoryMethodPOC.csproj" />
+    <Project Path="DesignPatternsPOC/SingletonPOC/SingletonPOC.csproj" />
+    <Project Path="DesignPatternsPOC/ProxyPOC/ProxyPOC.csproj" />
+    <Project Path="DesignPatternsPOC/FacadePOC/FacadePOC.csproj" />
+    <Project Path="DesignPatternsPOC/ChainOfResponsibilityPOC/ChainOfResponsibilityPOC.csproj" />
   </Folder>
   <Project Path="NetworkDiagnosticsPOC/NetworkDiagnosticsPOC.csproj" Id="de693f80-192c-479a-92ef-157675df4227" />
 </Solution>

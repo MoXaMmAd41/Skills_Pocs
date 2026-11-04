@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using EmployeeManagement.Api.Authorization;
+using EmployeeManagement.Api.Endpoints;
 using EmployeeManagement.Api.ErrorHandling;
 using EmployeeManagement.Api.Filters;
 using EmployeeManagement.Api.OpenApi;
@@ -44,6 +45,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapMinimalEndpoints();
 app.MapHealthChecks("/health");
 
 // Unknown API routes must stay 404s; everything else is a client-side route handled by Angular.

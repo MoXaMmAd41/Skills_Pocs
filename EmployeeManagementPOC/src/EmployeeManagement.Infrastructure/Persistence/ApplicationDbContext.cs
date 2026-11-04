@@ -1,4 +1,3 @@
-using EmployeeManagement.Domain.Common;
 using EmployeeManagement.Domain.Departments;
 using EmployeeManagement.Domain.Employees;
 using EmployeeManagement.Infrastructure.Identity;
@@ -8,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EmployeeManagement.Infrastructure.Persistence;
 
 public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<ApplicationUser>(options), IUnitOfWork
+    : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Employee> Employees => Set<Employee>();
 

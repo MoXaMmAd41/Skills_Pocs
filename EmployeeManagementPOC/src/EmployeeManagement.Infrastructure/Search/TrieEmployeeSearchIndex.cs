@@ -1,6 +1,5 @@
 using System.Data.Common;
 using Dapper;
-using DataStructuresAlgorithms.DataStructures;
 using EmployeeManagement.Application.Features.Employees;
 using EmployeeManagement.Infrastructure.Queries;
 

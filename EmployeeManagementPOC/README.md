@@ -38,7 +38,7 @@ The EF model maps to the **same schema** as the original MVC app (the existing m
 | Guards | `core/auth/auth.guards.ts` — `authGuard`, `guestGuard`, `roleGuard(...)` |
 | Pipes ("filters") | `shared/pipes/` — `filterBy` (client-side list filter), `initials`, `pluralize` |
 | Employee list filters | `features/employees/` — search (debounced) with autocomplete, department, status, sort; state lives in the URL query string |
-| Autocomplete | Suggestions under the search box come from `GET /api/v1/employees/suggestions`, served by an in-memory **Trie** from [`DataStructuresAlgorithmsPOC`](../DataStructuresAlgorithmsPOC/README.md) |
+| Autocomplete | Suggestions under the search box come from `GET /api/v1/employees/suggestions`, served by an in-memory **Trie** (`Infrastructure/Search/Trie.cs`) |
 | Server-side form errors | `shared/forms/server-errors.ts` maps `400` field errors and business error codes (e.g. duplicate email) onto form controls |
 
 ## Running locally
@@ -72,7 +72,7 @@ In Development the API applies migrations and seeds one demo user per role:
 docker compose up --build   # http://localhost:5001 (run from this folder)
 ```
 
-The image builds the Angular app and serves it from the API's `wwwroot`, so the SPA and API share one origin. The build context is the repository root because the API references `../DataStructuresAlgorithmsPOC`; to build the image directly, run `docker build -f EmployeeManagementPOC/Dockerfile .` from the root.
+The image builds the Angular app and serves it from the API's `wwwroot`, so the SPA and API share one origin. Build it from the repository root: `docker build -f EmployeeManagementPOC/Dockerfile .`
 
 ## Configuration
 

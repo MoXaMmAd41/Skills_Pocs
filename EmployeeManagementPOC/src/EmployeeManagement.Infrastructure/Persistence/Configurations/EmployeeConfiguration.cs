@@ -24,7 +24,9 @@ internal sealed class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 
         builder.Property(e => e.Phone).HasMaxLength(Employee.PhoneMaxLength);
 
-        builder.Property(e => e.Salary).HasColumnType("decimal(18,2)");
+        builder.Property(e => e.Salary)
+            .HasConversion(salary => salary.Amount, amount => Salary.Create(amount))
+            .HasColumnType("decimal(18,2)");
 
         builder.Ignore(e => e.FullName);
 
