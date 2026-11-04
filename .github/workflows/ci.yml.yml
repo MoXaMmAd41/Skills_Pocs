@@ -5,7 +5,7 @@ on:
 
 jobs:
   dotnet:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
         run: dotnet test EmployeeManagementPOC.slnx -c Release --no-build
 
   client:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     defaults:
       run:
         working-directory: EmployeeManagementPOC/client

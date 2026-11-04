@@ -1,4 +1,14 @@
 <Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/ci.yml.yml" />
+    <File Path=".github/workflows/cd.yml.yml" />
+  </Folder>
+  <Folder Name="/Docker/">
+    <File Path=".dockerignore" />
+    <File Path="EmployeeManagementPOC/Dockerfile" />
+    <File Path="EmployeeManagementPOC/docker-compose.yml" />
+  </Folder>
   <Folder Name="/EmployeeManagement/">
     <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Domain/EmployeeManagement.Domain.csproj" />
     <Project Path="EmployeeManagementPOC/src/EmployeeManagement.Application/EmployeeManagement.Application.csproj" />
